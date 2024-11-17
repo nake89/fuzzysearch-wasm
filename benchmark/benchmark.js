@@ -1,15 +1,28 @@
 const fs = require('node:fs/promises');
-const fuzzysearch = require("fuzzysearch")
+const fuzzysearch = require("fuzzysearch");
+const {fuzzysearch: fuzzywasm} = require("../pkg/hello_wasm")
 
 (async () => {
 	const data = await fs.readFile("./google-10000-english-usa-no-swears-medium.txt", {encoding: "utf8"})
 	const splitted = data.split("\n")
-	const emptyRemoved = splitted.filter(word=>word)
-	//console.time("fuzzysearch")
-	for (const one of emptyRemoved) {
-		fuzzysearch(leaveCharacters(one, 3), one)
-	}
-	//console.timeEnd("fuzzysearch")
+  // const types = new Set()
+  // for (let ass of splitted) {
+  //   types.add(typeof ass)
+  // }
+  // console.log(types)
+  
+//	const emptyRemoved = splitted.filter(word=>word)
+	console.time("fuzzysearch")
+	 for (const one of splitted) {
+	 	fuzzysearch(leaveCharacters(one, 3), one)
+	 }
+	console.timeEnd("fuzzysearch")
+
+	console.time("fuzzywasm")
+	 for (const one of splitted) {
+	 	fuzzywasm(leaveCharacters(one, 3), one)
+	 }
+	console.timeEnd("fuzzywasm")
 })()
 
 
